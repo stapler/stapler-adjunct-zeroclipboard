@@ -4,6 +4,6 @@ Use it like <st:adjunct include="org.kohsuke.stapler.zeroclipboard"/>
 <j:jelly xmlns:j="jelly:core">
   <script src="${it.packageUrl}/zeroclipboard/ZeroClipboard.js" type="text/javascript" />
   <script>
-    zeroclipboard.moviePath = "${it.packageUrl}/zeroclipboard/ZeroClipboard.swf";
+    zeroclipboard.setMoviePath("${it.packageUrl}/zeroclipboard/ZeroClipboard.swf");
   </script>
 </j:jelly>
