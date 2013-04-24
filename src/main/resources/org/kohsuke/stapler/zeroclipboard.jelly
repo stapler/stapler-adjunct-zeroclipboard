@@ -4,6 +4,47 @@ Use it like <st:adjunct include="org.kohsuke.stapler.zeroclipboard"/>
 <j:jelly xmlns:j="jelly:core">
   <script src="${it.packageUrl}/zeroclipboard/ZeroClipboard.js" type="text/javascript" />
   <script>
-    ZeroClipboard.setMoviePath("${it.packageUrl}/zeroclipboard/ZeroClipboard.swf");
+    ZeroClipboard.setDefaults({moviePath:"${it.packageUrl}/zeroclipboard/ZeroClipboard.swf"});
+
+    (function() {
+      function object(o) {
+          function F() {}
+          F.prototype = o;
+          return new F();
+      }
+
+
+      // backward compatibility with v1.0.7
+      ZeroClipboard.Client = function() {
+        ZeroClipboard.call(this);
+      };
+      ZeroClipboard.Client.prototype = object(ZeroClipboard.prototype);
+      ZeroClipboard.Client.prototype.glue = function(e,container) {
+        if (typeof e == "string")   e = document.getElementById(e);q
+        ZeroClipboard.prototype.glue.call(this,e);
+        var self = this;
+        function resizeHandler() {
+          self.reposition();
+        }
+
+        <!--
+          relative positioning to the container is removed, and I don't see how to resurrect that feature.
+
+          As of 1.1.7, there is a singleton DIV element that holds the flash movie, which
+          then gets moved around as the mouse hovers to the glued element. Given this, I think the relative
+          positioning is not necessary.
+
+          In any case, in the spirit of better do something than nothing, if the container is specified,
+          set up an automatic repositioning support, as a good faith attempt to keep the positions in sync
+          with the HTML.
+        -->
+        if (container) {
+          if (window.addEventListener)
+              window.addEventListener("resize",resizeHandler);
+          else
+              window.attachEvent("onresize",resizeHandler);
+        }
+      }
+    })();
   </script>
 </j:jelly>
