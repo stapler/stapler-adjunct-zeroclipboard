@@ -13,14 +13,27 @@ Use it like <st:adjunct include="org.kohsuke.stapler.zeroclipboard"/>
           return new F();
       }
 
+      if (!ZeroClipboard.setMoviePath) {
+        ZeroClipboard.setMoviePath = function (p) {
+            // no-op. use what we bundle since swf and js needs to be tied together
+        };
+      }
 
       // backward compatibility with v1.0.7
       ZeroClipboard.Client = function() {
         ZeroClipboard.call(this);
+        // what's set in setText gets erased upon copy, so this forces it back in
+        this.on("datarequested",function(clip) {
+          if (clip.text)
+            ZeroClipboard.prototype.setText.call(clip,clip.text);
+        });
       };
       ZeroClipboard.Client.prototype = object(ZeroClipboard.prototype);
+      ZeroClipboard.Client.prototype.setText = function(text) {
+        this.text = text;
+      };
       ZeroClipboard.Client.prototype.glue = function(e,container) {
-        if (typeof e == "string")   e = document.getElementById(e);q
+        if (typeof e == "string")   e = document.getElementById(e);
         ZeroClipboard.prototype.glue.call(this,e);
         var self = this;
         function resizeHandler() {
