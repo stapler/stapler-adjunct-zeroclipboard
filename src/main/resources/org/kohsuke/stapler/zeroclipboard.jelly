@@ -1,5 +1,5 @@
 <!--
-Use it like <st:adjunct include="org.kohsuke.stapler.zeroclipboard"/>
+Use it like <st:adjunct includes="org.kohsuke.stapler.zeroclipboard"/>
 -->
 <j:jelly xmlns:j="jelly:core">
   <script src="${it.packageUrl}/zeroclipboard/ZeroClipboard.js" type="text/javascript" />
