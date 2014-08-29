@@ -4,60 +4,9 @@ Use it like <st:adjunct includes="org.kohsuke.stapler.zeroclipboard"/>
 <j:jelly xmlns:j="jelly:core">
   <script src="${it.packageUrl}/zeroclipboard/ZeroClipboard.js" type="text/javascript" />
   <script>
-    ZeroClipboard.setDefaults({moviePath:"${it.packageUrl}/zeroclipboard/ZeroClipboard.swf"});
-
-    (function() {
-      function object(o) {
-          function F() {}
-          F.prototype = o;
-          return new F();
-      }
-
-      if (!ZeroClipboard.setMoviePath) {
-        ZeroClipboard.setMoviePath = function (p) {
-            // no-op. use what we bundle since swf and js needs to be tied together
-        };
-      }
-
-      // backward compatibility with v1.0.7
-      ZeroClipboard.Client = function() {
-        ZeroClipboard.call(this);
-        // what's set in setText gets erased upon copy, so this forces it back in
-        this.on("datarequested",function(clip) {
-          if (clip.text)
-            ZeroClipboard.prototype.setText.call(clip,clip.text);
-        });
-      };
-      ZeroClipboard.Client.prototype = object(ZeroClipboard.prototype);
-      ZeroClipboard.Client.prototype.setText = function(text) {
-        this.text = text;
-      };
-      ZeroClipboard.Client.prototype.glue = function(e,container) {
-        if (typeof e == "string")   e = document.getElementById(e);
-        ZeroClipboard.prototype.glue.call(this,e);
-        var self = this;
-        function resizeHandler() {
-          self.reposition();
-        }
-
-        <!--
-          relative positioning to the container is removed, and I don't see how to resurrect that feature.
-
-          As of 1.1.7, there is a singleton DIV element that holds the flash movie, which
-          then gets moved around as the mouse hovers to the glued element. Given this, I think the relative
-          positioning is not necessary.
-
-          In any case, in the spirit of better do something than nothing, if the container is specified,
-          set up an automatic repositioning support, as a good faith attempt to keep the positions in sync
-          with the HTML.
-        -->
-        if (container) {
-          if (window.addEventListener)
-              window.addEventListener("resize",resizeHandler);
-          else
-              window.attachEvent("onresize",resizeHandler);
-        }
-      }
-    })();
+    ZeroClipboard.config({
+        moviePath: "${it.packageUrl}/zeroclipboard/ZeroClipboard.swf",
+        cacheBust: false
+    });
   </script>
 </j:jelly>
